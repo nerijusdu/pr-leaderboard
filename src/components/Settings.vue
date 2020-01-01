@@ -25,6 +25,17 @@
           />
           <span class="focus-input"/>
         </div>
+        <div class="form-field">
+          <label class="label-input" for="project">Repository name</label>
+          <input
+            v-model="model.repository"
+            id="repository"
+            class="input"
+            type="text"
+            required
+          />
+          <span class="focus-input"/>
+        </div>
         <button
           type="button"
           :class="['authorize-link', { disabled: !hasAzureSettings }]"
@@ -47,7 +58,8 @@ export default {
   data: () => ({
     model: {
       organization: '',
-      project: ''
+      project: '',
+      repository: ''
     }
   }),
   computed: {
@@ -61,6 +73,7 @@ export default {
 
       if (this.model.organization
         && this.model.project
+        && this.model.repository
       ) {
         this.saveSettings(this.model);
 
@@ -81,6 +94,7 @@ export default {
     updateModel(value) {
       this.model.organization = value.organization;
       this.model.project = value.project;
+      this.model.repository = value.repository;
     }
   },
   mounted() {

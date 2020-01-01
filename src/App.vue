@@ -12,7 +12,8 @@ import { mapActions } from 'vuex';
 import Loader from './components/Loader.vue';
 import Navigation from './components/Navigation.vue';
 import Message from './components/Message.vue';
-import AuthService from './services/authService';
+import PrService from './services/prService';
+
 
 export default {
   name: 'app',
@@ -24,7 +25,14 @@ export default {
   methods: mapActions(['init']),
   async mounted() {
     await this.init();
-    new AuthService(this.$store).initData();
+    const service = new PrService(this.$store);
+    await service.initData();
+    const leaderboard = await service.getLeaderboard({
+      startDate: new Date('2019-12-01'),
+      endDate: new Date('2020-01-31')
+    });
+    // eslint-disable-next-line no-console
+    console.log(leaderboard);
   }
 }
 </script>

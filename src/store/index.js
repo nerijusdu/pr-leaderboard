@@ -11,7 +11,8 @@ const state = {
   activeLoaders: 0,
   settings: {
     organization: '',
-    project: ''
+    project: '',
+    repository: ''
   },
   message: {
     content: '',
