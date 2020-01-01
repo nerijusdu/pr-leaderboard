@@ -10,6 +10,10 @@ export default class PrService extends AuthService {
   }
 
   async getPRs() {
+    if (!this.store.getters.hasAzureSettings || !this.store.state.isAccessGranted) {
+      return [];
+    }
+
     const organization = this.store.state.settings.organization;
     const project = this.store.state.settings.project;
     const repositoryId = this.store.state.settings.repository;
@@ -44,12 +48,13 @@ export default class PrService extends AuthService {
       // 5 - approved with suggestions
       // 10 - approved
       const approver = pr.reviewers.find(x => x.vote >= 5);
-      if (!approver) {
+      if (!approver || approver.isContainer) {
         return;
       }
 
       if (!users[approver.id]) {
         users[approver.id] = {
+          id: approver.id,
           displayName: approver.displayName,
           uniqueName: approver.uniqueName,
           imageUrl: approver.imageUrl,
