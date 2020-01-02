@@ -1,29 +1,31 @@
 <template>
   <div class="leaderboard-container">
+    <div class="leaderboard-row title">
+      <div class="place">Place</div>
+      <div>Name</div>
+      <div>PRs approved</div>
+    </div>
     <div
       class="leaderboard-row"
-      v-for="user in users"
+      v-for="(user, index) in users"
       :key="user.id"
     >
-      {{ user.displayName }} ({{ user.score }})
+      <div class="place">{{ index + 1 }}</div>
+      <div>{{ user.displayName }}</div>
+      <div>{{ user.score }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import PrService from '../services/prService';
+import prService from '../services/prService';
 
 export default {
   data: () => ({
     users: []
   }),
   async mounted() {
-    const service = new PrService(this.$store);
-    await service.initData();
-    const leaderboard = await service.getLeaderboard({
-      startDate: new Date('2019-12-01'),
-      endDate: new Date('2020-01-31')
-    });
+    const leaderboard = await prService.getLeaderboard();
 
     this.users = Object.values(leaderboard).sort((a, b) => b.score - a.score);
   }
@@ -39,19 +41,30 @@ export default {
   justify-content: center;
 }
 
-.leaderboard-row:nth-of-type(1) {
-  background-color: #f4f43f;
+.leaderboard-row > div {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.leaderboard-row > .place {
+  flex-grow: 0;
+  width: 100px !important;
 }
 
 .leaderboard-row:nth-of-type(2) {
-  background-color: #eee;
+  background-color: #f4f43f;
 }
 
 .leaderboard-row:nth-of-type(3) {
+  background-color: #eee;
+}
+
+.leaderboard-row:nth-of-type(4) {
   background-color: #c77c30;
 }
 
-.leaderboard-row:hover {
+.leaderboard-row:hover:not(.title) {
   background-color: #cae6ff;
 }
 </style>

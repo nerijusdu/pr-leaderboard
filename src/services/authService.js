@@ -2,8 +2,9 @@ import qs from 'querystring';
 import api from './api';
 import config from '../config';
 import dateHelper from '../helpers/dateHelper';
+import store from '../store';
 
-export default class AuthService {
+export class AuthService {
   static callbackUrl = `${config.url}/callback.html`;
 
   static get authUrl() {
@@ -25,14 +26,14 @@ export default class AuthService {
     document.location.href = '/';
   }
 
-  constructor(store) {
+  constructor(storeObj) {
     this.code = '';
     this.accessToken = '';
     this.refreshToken = '';
     this.expiresIn = dateHelper.now();
-    this.onAuthorized = () => store.dispatch('authorizeApp');
-    this.startLoad = () => store.dispatch('addLoader');
-    this.endLoad = () => store.dispatch('removeLoader');
+    this.onAuthorized = () => storeObj.dispatch('authorizeApp');
+    this.startLoad = () => storeObj.dispatch('addLoader');
+    this.endLoad = () => storeObj.dispatch('removeLoader');
   }
 
   async initData() {
@@ -123,3 +124,7 @@ export default class AuthService {
     window.localStorage.setItem('expiresIn', this.expiresIn.toISOString());
   }
 }
+
+const instance = new AuthService(store);
+
+export default instance;

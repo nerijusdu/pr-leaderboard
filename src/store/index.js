@@ -12,7 +12,9 @@ const state = {
   settings: {
     organization: '',
     project: '',
-    repository: ''
+    repository: '',
+    startDate: new Date(),
+    endDate: new Date()
   },
   message: {
     content: '',

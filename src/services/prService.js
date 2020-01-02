@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import api from './api';
-import AuthService from './authService';
+import authService from './authService';
+import store from '../store';
 
-export default class PrService extends AuthService {
+export class PrService {
   constructor(storeObj) {
-    super(storeObj);
-
     this.store = storeObj;
   }
 
@@ -17,6 +16,8 @@ export default class PrService extends AuthService {
     const organization = this.store.state.settings.organization;
     const project = this.store.state.settings.project;
     const repositoryId = this.store.state.settings.repository;
+
+    await authService.initData();
     const result = await api.get({
       url: `https://dev.azure.com/${organization}/${project}/_apis/git/repositories/${repositoryId}/pullrequests`,
       params: {
@@ -24,7 +25,7 @@ export default class PrService extends AuthService {
         'searchCriteria.status': 'completed',
         '$top': 100
       },
-      headers: this.authHeader
+      headers: authService.authHeader
     });
 
     if (!result) {
@@ -34,8 +35,10 @@ export default class PrService extends AuthService {
     return result.data.value;
   }
 
-  async getLeaderboard({ startDate, endDate }) {
+  async getLeaderboard() {
     const users = {};
+    const startDate = new Date(this.store.state.settings.startDate);
+    const endDate = new Date(this.store.state.settings.endDate);
 
     const prs = await this.getPRs();
     prs.forEach((pr) => {
@@ -68,3 +71,7 @@ export default class PrService extends AuthService {
     return users;
   }
 }
+
+const instance = new PrService(store);
+
+export default instance;

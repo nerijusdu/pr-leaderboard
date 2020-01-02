@@ -45,6 +45,31 @@
           Authorize app
         </button>
       </div>
+      <div class="settings-column">
+        <h3 class="column-title">App settings</h3>
+        <div class="form-field">
+          <label class="label-input" for="startDate">Start date</label>
+          <input
+            v-model="model.startDate"
+            id="startDate"
+            class="input"
+            type="date"
+            required
+          />
+          <span class="focus-input"/>
+        </div>
+        <div class="form-field">
+          <label class="label-input" for="endDate">End date</label>
+          <input
+            v-model="model.endDate"
+            id="endDate"
+            class="input"
+            type="date"
+            required
+          />
+          <span class="focus-input"/>
+        </div>
+      </div>
     </div>
     <button class="save-button">Save</button>
   </form>
@@ -59,7 +84,9 @@ export default {
     model: {
       organization: '',
       project: '',
-      repository: ''
+      repository: '',
+      startDate: '',
+      endDate: ''
     }
   }),
   computed: {
@@ -74,8 +101,14 @@ export default {
       if (this.model.organization
         && this.model.project
         && this.model.repository
+        && this.model.startDate
+        && this.model.endDate
       ) {
-        this.saveSettings(this.model);
+        this.saveSettings({
+          ...this.model,
+          startDate: this.model.startDate,
+          endDate: this.model.endDate
+        });
 
         return false;
       }
@@ -92,9 +125,12 @@ export default {
       window.location.href = AuthService.authUrl;
     },
     updateModel(value) {
+      if (!value) return;
       this.model.organization = value.organization;
       this.model.project = value.project;
       this.model.repository = value.repository;
+      this.model.startDate = value.startDate;
+      this.model.endDate = value.endDate;
     }
   },
   mounted() {
