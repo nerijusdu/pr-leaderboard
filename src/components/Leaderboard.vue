@@ -20,14 +20,26 @@
 <script>
 import prService from '../services/prService';
 
+let timeoutId;
+
 export default {
   data: () => ({
     users: []
   }),
-  async mounted() {
-    const leaderboard = await prService.getLeaderboard();
+  methods: {
+    async updateData() {
+      const leaderboard = await prService.getLeaderboard();
 
-    this.users = Object.values(leaderboard).sort((a, b) => b.score - a.score);
+      this.users = Object.values(leaderboard).sort((a, b) => b.score - a.score);
+    }
+  },
+  async created() {
+    await this.updateData();
+
+    if (timeoutId) {
+      clearInterval(timeoutId);
+    }
+    timeoutId = setInterval(this.updateData, 1000 * 60 * 15);
   }
 }
 </script>
