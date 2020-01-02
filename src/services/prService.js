@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import api from './api';
 import authService from './authService';
 import store from '../store';
@@ -17,7 +16,6 @@ export class PrService {
     const project = this.store.state.settings.project;
     const repositoryId = this.store.state.settings.repository;
 
-    await authService.initData();
     const result = await api.get({
       url: `https://dev.azure.com/${organization}/${project}/_apis/git/repositories/${repositoryId}/pullrequests`,
       params: {
@@ -32,7 +30,7 @@ export class PrService {
       return [];
     }
 
-    return result.data.value;
+    return result.data.value || [];
   }
 
   async getLeaderboard() {

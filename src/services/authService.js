@@ -5,20 +5,20 @@ import dateHelper from '../helpers/dateHelper';
 import store from '../store';
 
 export class AuthService {
-  static callbackUrl = `${config.url}/callback.html`;
+  callbackUrl = `${config.url}/callback.html`;
 
-  static get authUrl() {
+  get authUrl() {
     const params = {
       client_id: config.clientId,
       response_type: 'Assertion',
       state: 'none',
       scope: config.scope,
-      redirect_uri: AuthService.callbackUrl,
+      redirect_uri: this.callbackUrl,
     };
     return `https://app.vssps.visualstudio.com/oauth2/authorize?${qs.stringify(params)}`;
   }
 
-  static clearUserSession() {
+  clearUserSession() {
     window.localStorage.removeItem('appAuthorized');
     window.localStorage.removeItem('accessToken');
     window.localStorage.removeItem('refreshToken');
@@ -70,7 +70,7 @@ export class AuthService {
       url: `${config.authUrl}/RefreshAccessToken`,
       data: {
         refreshToken: this.refreshToken,
-        callbackUrl: AuthService.callbackUrl
+        callbackUrl: this.callbackUrl
       }
     });
     this.endLoad();
@@ -98,7 +98,7 @@ export class AuthService {
       url: `${config.authUrl}/GetAccessToken`,
       data: {
         code: this.code,
-        callbackUrl: AuthService.callbackUrl
+        callbackUrl: this.callbackUrl
       }
     });
     this.endLoad();

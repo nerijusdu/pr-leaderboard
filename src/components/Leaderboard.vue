@@ -19,6 +19,7 @@
 
 <script>
 import prService from '../services/prService';
+import authService from '../services/authService';
 
 let timeoutId;
 
@@ -34,6 +35,7 @@ export default {
     }
   },
   async created() {
+    await authService.initData();
     await this.updateData();
 
     if (timeoutId) {
